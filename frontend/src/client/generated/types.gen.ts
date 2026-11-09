@@ -1406,6 +1406,18 @@ export type PaginatedProjectView = {
     total_pages?: number;
 };
 
+export type PaginatedSavedTaskView = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    items?: Array<SavedTaskView> | null;
+    page?: number;
+    per_page?: number;
+    total?: number;
+    total_pages?: number;
+};
+
 export type PaginatedSession = {
     /**
      * A URL to the JSON Schema for this object.
@@ -2151,6 +2163,49 @@ export type SavedFilterReadBody = {
     title?: string;
     /**
      * A timestamp when this filter was last updated. You cannot change this value.
+     */
+    readonly updated?: string;
+};
+
+export type SavedTaskView = {
+    /**
+     * A URL to the JSON Schema for this object.
+     */
+    readonly $schema?: string;
+    /**
+     * A timestamp when this saved view was created. You cannot change this value.
+     */
+    readonly created?: string;
+    /**
+     * A filter query in the syntax of the task list's filter parameter.
+     */
+    filter?: string;
+    /**
+     * The unique, numeric id of this saved view.
+     */
+    readonly id?: number;
+    /**
+     * asc or desc for each sort_by entry at the same position.
+     */
+    order_by?: Array<string> | null;
+    /**
+     * The project view this saved view belongs to; taken from the URL.
+     */
+    readonly project_view_id?: number;
+    /**
+     * A free-text search applied together with the filter.
+     */
+    search?: string;
+    /**
+     * Task fields to sort by, in order of precedence.
+     */
+    sort_by?: Array<string> | null;
+    /**
+     * The name shown in the saved views menu.
+     */
+    title?: string;
+    /**
+     * A timestamp when this saved view was last updated. You cannot change this value.
      */
     readonly updated?: string;
 };
@@ -4666,6 +4721,14 @@ export type PaginatedProjectViewWritable = {
     total_pages?: number;
 };
 
+export type PaginatedSavedTaskViewWritable = {
+    items?: Array<SavedTaskViewWritable> | null;
+    page?: number;
+    per_page?: number;
+    total?: number;
+    total_pages?: number;
+};
+
 export type PaginatedSessionWritable = {
     items?: Array<unknown> | null;
     page?: number;
@@ -5049,6 +5112,29 @@ export type SavedFilterReadBodyWritable = {
     is_favorite?: boolean;
     /**
      * The title of the filter.
+     */
+    title?: string;
+};
+
+export type SavedTaskViewWritable = {
+    /**
+     * A filter query in the syntax of the task list's filter parameter.
+     */
+    filter?: string;
+    /**
+     * asc or desc for each sort_by entry at the same position.
+     */
+    order_by?: Array<string> | null;
+    /**
+     * A free-text search applied together with the filter.
+     */
+    search?: string;
+    /**
+     * Task fields to sort by, in order of precedence.
+     */
+    sort_by?: Array<string> | null;
+    /**
+     * The name shown in the saved views menu.
      */
     title?: string;
 };
@@ -9329,6 +9415,133 @@ export type TaskBucketUpdateResponses = {
 };
 
 export type TaskBucketUpdateResponse = TaskBucketUpdateResponses[keyof TaskBucketUpdateResponses];
+
+export type SavedTaskViewsListData = {
+    body?: never;
+    path: {
+        project: number;
+        view: number;
+    };
+    query?: {
+        /**
+         * 1-based page number.
+         */
+        page?: number;
+        /**
+         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         */
+        per_page?: number;
+        /**
+         * Search query; filters the list to items matching this string.
+         */
+        q?: string;
+    };
+    url: '/projects/{project}/views/{view}/saved-views';
+};
+
+export type SavedTaskViewsListErrors = {
+    /**
+     * Error
+     */
+    default: VikunjaErrorModel;
+};
+
+export type SavedTaskViewsListError = SavedTaskViewsListErrors[keyof SavedTaskViewsListErrors];
+
+export type SavedTaskViewsListResponses = {
+    /**
+     * OK
+     */
+    200: PaginatedSavedTaskView;
+};
+
+export type SavedTaskViewsListResponse = SavedTaskViewsListResponses[keyof SavedTaskViewsListResponses];
+
+export type SavedTaskViewsCreateData = {
+    body: SavedTaskViewWritable;
+    path: {
+        project: number;
+        view: number;
+    };
+    query?: never;
+    url: '/projects/{project}/views/{view}/saved-views';
+};
+
+export type SavedTaskViewsCreateErrors = {
+    /**
+     * Error
+     */
+    default: VikunjaErrorModel;
+};
+
+export type SavedTaskViewsCreateError = SavedTaskViewsCreateErrors[keyof SavedTaskViewsCreateErrors];
+
+export type SavedTaskViewsCreateResponses = {
+    /**
+     * Created
+     */
+    201: SavedTaskView;
+};
+
+export type SavedTaskViewsCreateResponse = SavedTaskViewsCreateResponses[keyof SavedTaskViewsCreateResponses];
+
+export type SavedTaskViewsDeleteData = {
+    body?: never;
+    path: {
+        project: number;
+        view: number;
+        id: number;
+    };
+    query?: never;
+    url: '/projects/{project}/views/{view}/saved-views/{id}';
+};
+
+export type SavedTaskViewsDeleteErrors = {
+    /**
+     * Error
+     */
+    default: VikunjaErrorModel;
+};
+
+export type SavedTaskViewsDeleteError = SavedTaskViewsDeleteErrors[keyof SavedTaskViewsDeleteErrors];
+
+export type SavedTaskViewsDeleteResponses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type SavedTaskViewsDeleteResponse = SavedTaskViewsDeleteResponses[keyof SavedTaskViewsDeleteResponses];
+
+export type SavedTaskViewsUpdateData = {
+    body: SavedTaskViewWritable;
+    path: {
+        project: number;
+        view: number;
+        id: number;
+    };
+    query?: never;
+    url: '/projects/{project}/views/{view}/saved-views/{id}';
+};
+
+export type SavedTaskViewsUpdateErrors = {
+    /**
+     * Error
+     */
+    default: VikunjaErrorModel;
+};
+
+export type SavedTaskViewsUpdateError = SavedTaskViewsUpdateErrors[keyof SavedTaskViewsUpdateErrors];
+
+export type SavedTaskViewsUpdateResponses = {
+    /**
+     * OK
+     */
+    200: SavedTaskView;
+};
+
+export type SavedTaskViewsUpdateResponse = SavedTaskViewsUpdateResponses[keyof SavedTaskViewsUpdateResponses];
 
 export type ProjectViewTasksListData = {
     body?: never;
