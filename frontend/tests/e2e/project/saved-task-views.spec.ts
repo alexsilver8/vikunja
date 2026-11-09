@@ -65,7 +65,10 @@ test.describe('Saved task views', () => {
 		await page.getByRole('button', {name: 'Apply sort'}).click()
 		await expect(page).toHaveURL(/sort=title:desc/)
 		await trigger(page, 'Saved views').click()
-		await page.getByRole('button', {name: 'Update saved view Important with the current filters and sorting'}).click()
+		const updateButton = page.getByRole('button', {name: 'Update saved view Important with the current filters and sorting'})
+		// An icon missing from the icon library renders nothing, leaving an invisible button.
+		await expect(updateButton.locator('svg')).toBeVisible()
+		await updateButton.click()
 		await expect(trigger(page, 'Important')).toBeVisible()
 		await expect(page.getByRole('button', {name: /^Update saved view Important/})).toHaveCount(0)
 		await expect.poll(async () => (await storedViews(apiContext, userToken, project.id, listView))[0]).toMatchObject({

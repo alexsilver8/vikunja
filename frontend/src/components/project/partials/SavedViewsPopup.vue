@@ -78,7 +78,7 @@
 								:aria-disabled="updateMutation.isPending.value || undefined"
 								@click="overwrite(view)"
 							>
-								<Icon icon="save" />
+								<Icon :icon="['far', 'save']" />
 							</BaseButton>
 							<BaseButton
 								v-tooltip="$t('project.savedViews.renameTooltip')"
@@ -131,7 +131,7 @@
 					<XButton
 						type="submit"
 						class="mbs-2 is-fullwidth"
-						icon="save"
+						:icon="['far', 'save']"
 						:shadow="false"
 						:aria-disabled="createMutation.isPending.value || undefined"
 						:loading="createMutation.isPending.value"
