@@ -71,6 +71,17 @@
 								{{ view.title }}
 							</BaseButton>
 							<BaseButton
+								v-if="view.id !== activeView?.id"
+								v-tooltip="$t('project.savedViews.updateTooltip')"
+								class="saved-view-action"
+								:aria-label="$t('project.savedViews.update', {title: view.title})"
+								:aria-disabled="updateMutation.isPending.value || undefined"
+								@click="overwrite(view)"
+							>
+								<Icon icon="save" />
+							</BaseButton>
+							<BaseButton
+								v-tooltip="$t('project.savedViews.renameTooltip')"
 								class="saved-view-action"
 								:aria-label="$t('project.savedViews.rename', {title: view.title})"
 								@click="startRename(view)"
@@ -78,6 +89,7 @@
 								<Icon icon="pen" />
 							</BaseButton>
 							<BaseButton
+								v-tooltip="$t('project.savedViews.deleteTooltip')"
 								class="saved-view-action is-danger"
 								:aria-label="$t('project.savedViews.delete', {title: view.title})"
 								:aria-disabled="deleteMutation.isPending.value || undefined"
@@ -239,6 +251,17 @@ async function saveRename() {
 	if (renaming.value === draft) {
 		renaming.value = null
 	}
+}
+
+function overwrite(view: SavedTaskViewResponse) {
+	if (updateMutation.isPending.value) return
+	updateMutation.mutate({
+		scope: scope.value,
+		view: {
+			...view,
+			...props.current,
+		},
+	})
 }
 
 function remove(view: SavedTaskViewResponse) {

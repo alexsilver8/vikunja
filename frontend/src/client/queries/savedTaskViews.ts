@@ -108,7 +108,7 @@ export function updateSavedTaskViewMutationOptions() {
 			current => current ? sortByTitle(current.map(v => v.id === updated.id ? updated : v)) : current,
 		),
 		onSettled: ({scope}, client) => client.invalidateQueries({queryKey: savedTaskViewKeys.list(scope)}),
-		successMessage: () => i18n.global.t('project.savedViews.renameSuccess'),
+		successMessage: () => i18n.global.t('project.savedViews.updateSuccess'),
 	})
 }
 

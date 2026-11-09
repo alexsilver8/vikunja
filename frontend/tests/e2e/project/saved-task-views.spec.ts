@@ -59,6 +59,22 @@ test.describe('Saved task views', () => {
 		await expect(page.locator('.tasks .task .tasktext')).toHaveCount(2)
 		await expect(page.locator('.tasks .task .tasktext')).toContainText(['Task 3', 'Task 2'])
 
+		// Changing the sort after applying leaves the saved view; updating saves it back in.
+		await page.locator('.filter-container').getByRole('button', {name: 'Sort', exact: true}).click()
+		await page.getByLabel('Sort by').selectOption({label: 'Title (Z–A)'})
+		await page.getByRole('button', {name: 'Apply sort'}).click()
+		await expect(page).toHaveURL(/sort=title:desc/)
+		await trigger(page, 'Saved views').click()
+		await page.getByRole('button', {name: 'Update saved view Important with the current filters and sorting'}).click()
+		await expect(trigger(page, 'Important')).toBeVisible()
+		await expect(page.getByRole('button', {name: /^Update saved view Important/})).toHaveCount(0)
+		await expect.poll(async () => (await storedViews(apiContext, userToken, project.id, listView))[0]).toMatchObject({
+			title: 'Important',
+			filter: 'priority >= 2',
+			sort_by: ['title'],
+			order_by: ['desc'],
+		})
+
 		await page.reload()
 		await trigger(page, 'Important').click()
 		await page.getByRole('button', {name: 'Rename saved view Important'}).click()
