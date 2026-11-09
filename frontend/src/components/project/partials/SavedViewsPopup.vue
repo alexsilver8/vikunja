@@ -8,10 +8,17 @@
 				ref="trigger"
 				variant="secondary"
 				icon="layer-group"
+				class="saved-views-trigger"
 				:class="{'has-active-view': activeView}"
+				:wrap="false"
 				@click.prevent.stop="toggle()"
 			>
-				{{ activeView?.title ?? $t('project.savedViews.title') }}
+				<span
+					v-tooltip="activeView?.title"
+					class="saved-views-trigger-label"
+				>
+					{{ activeView?.title ?? $t('project.savedViews.title') }}
+				</span>
 			</XButton>
 		</template>
 		<template #content="{close}">
@@ -337,5 +344,14 @@ function remove(view: SavedTaskViewResponse) {
 
 .has-active-view {
 	color: var(--primary);
+}
+
+// The button wraps its slot in an element that doesn't shrink, so the label caps itself.
+.saved-views-trigger-label {
+	display: inline-block;
+	max-inline-size: 12rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	vertical-align: bottom;
 }
 </style>
