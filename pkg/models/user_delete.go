@@ -203,6 +203,7 @@ func deleteUserInViews(s *xorm.Session, u *user.User, views []*ProjectView) (err
 		{"user_id", &TeamMember{}},
 		{"user_id", &ProjectUser{}},
 		{"owner_id", &SavedFilter{}},
+		{"owner_id", &SavedTaskView{}},
 		{"user_id", &Reaction{}},
 		{"user_id", &Favorite{}},
 		{"owner_id", &APIToken{}},

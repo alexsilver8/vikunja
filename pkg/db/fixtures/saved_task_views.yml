@@ -1,0 +1,42 @@
+- id: 1
+  title: Due soon
+  project_view_id: 1
+  owner_id: 1
+  filter: 'done = false'
+  search: ''
+  sort_by: '["due_date","id"]'
+  order_by: '["asc","desc"]'
+  created: 2026-11-01 10:00:00
+  updated: 2026-11-01 10:00:00
+- id: 2
+  title: All open
+  project_view_id: 1
+  owner_id: 1
+  filter: 'done = false'
+  search: ''
+  sort_by: '[]'
+  order_by: '[]'
+  created: 2026-11-01 10:00:00
+  updated: 2026-11-01 10:00:00
+# Same view, other owner: user1 must never see or change it.
+- id: 3
+  title: Someone else's view
+  project_view_id: 1
+  owner_id: 2
+  filter: ''
+  search: 'foo'
+  sort_by: '[]'
+  order_by: '[]'
+  created: 2026-11-01 10:00:00
+  updated: 2026-11-01 10:00:00
+# Same owner, other view of project 1.
+- id: 4
+  title: Kanban view
+  project_view_id: 2
+  owner_id: 1
+  filter: ''
+  search: ''
+  sort_by: '[]'
+  order_by: '[]'
+  created: 2026-11-01 10:00:00
+  updated: 2026-11-01 10:00:00
