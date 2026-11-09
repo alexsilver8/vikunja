@@ -14,7 +14,8 @@
 				@click.prevent.stop="toggle()"
 			>
 				<span
-					v-tooltip="activeView?.title"
+					ref="triggerLabel"
+					v-tooltip="labelTruncated ? activeView?.title : undefined"
 					class="saved-views-trigger-label"
 				>
 					{{ activeView?.title ?? $t('project.savedViews.title') }}
@@ -153,6 +154,7 @@
 
 <script setup lang="ts">
 import {computed, nextTick, ref} from 'vue'
+import {useResizeObserver} from '@vueuse/core'
 
 import BaseButton from '@/components/base/BaseButton.vue'
 import XButton from '@/components/input/Button.vue'
@@ -179,6 +181,13 @@ const emit = defineEmits<{
 
 const trigger = ref<InstanceType<typeof XButton> | null>(null)
 const triggerEl = computed<HTMLElement | null>(() => trigger.value?.$el ?? null)
+
+const triggerLabel = ref<HTMLElement | null>(null)
+const labelTruncated = ref(false)
+useResizeObserver(triggerLabel, () => {
+	const label = triggerLabel.value
+	labelTruncated.value = label !== null && label.scrollWidth > label.clientWidth
+})
 
 const scope = computed(() => ({
 	projectId: props.projectId,
