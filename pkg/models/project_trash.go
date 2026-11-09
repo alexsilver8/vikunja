@@ -192,6 +192,11 @@ func hardDeleteProjectTree(s *xorm.Session, p *Project, doer *user.User, ancesto
 		return
 	}
 
+	_, err = s.In("project_view_id", viewIDs).Delete(&SavedTaskView{})
+	if err != nil {
+		return
+	}
+
 	// Every user's favorite, not just the doer's
 	_, err = s.Where("entity_id = ? AND kind = ?", p.ID, FavoriteKindProject).Delete(&Favorite{})
 	if err != nil {

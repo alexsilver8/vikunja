@@ -3373,3 +3373,35 @@ func (err ErrUserDataExportDoesNotExist) HTTPError() web.HTTPError {
 		Message:  "No user data export found.",
 	}
 }
+
+// =================
+// Saved task views
+// =================
+
+// ErrSavedTaskViewDoesNotExist represents an error where a saved task view does not exist
+// or does not belong to the user and project view it was requested for.
+type ErrSavedTaskViewDoesNotExist struct {
+	SavedTaskViewID int64
+}
+
+// IsErrSavedTaskViewDoesNotExist checks if an error is ErrSavedTaskViewDoesNotExist.
+func IsErrSavedTaskViewDoesNotExist(err error) bool {
+	_, ok := err.(ErrSavedTaskViewDoesNotExist)
+	return ok
+}
+
+func (err ErrSavedTaskViewDoesNotExist) Error() string {
+	return fmt.Sprintf("Saved task view does not exist [SavedTaskViewID: %d]", err.SavedTaskViewID)
+}
+
+// ErrCodeSavedTaskViewDoesNotExist holds the unique world-error code of this error
+const ErrCodeSavedTaskViewDoesNotExist = 20001
+
+// HTTPError holds the http error description
+func (err ErrSavedTaskViewDoesNotExist) HTTPError() web.HTTPError {
+	return web.HTTPError{
+		HTTPCode: http.StatusNotFound,
+		Code:     ErrCodeSavedTaskViewDoesNotExist,
+		Message:  "This saved view does not exist.",
+	}
+}

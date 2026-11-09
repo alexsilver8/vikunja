@@ -575,6 +575,27 @@
       "editTask": "Edit Task",
       "sort": "Sort"
     },
+    "savedViews": {
+      "title": "Saved views",
+      "empty": "No saved views yet. Set up filters and sorting, then save them here.",
+      "nameLabel": "Name of the current view",
+      "namePlaceholder": "e.g. Due this week",
+      "titleRequired": "Please enter a name for this view.",
+      "save": "Save current view",
+      "apply": "Apply saved view {title}",
+      "update": "Update saved view {title} with the current filters and sorting",
+      "updateTooltip": "Save the current filters and sorting into this view",
+      "rename": "Rename saved view {title}",
+      "renameTooltip": "Rename",
+      "renameLabel": "New name for {title}",
+      "renameSave": "Save name",
+      "renameCancel": "Cancel renaming",
+      "delete": "Delete saved view {title}",
+      "deleteTooltip": "Delete",
+      "saveSuccess": "The view was saved.",
+      "updateSuccess": "The saved view was updated.",
+      "deleteSuccess": "The saved view was deleted."
+    },
     "gantt": {
       "title": "Gantt",
       "size": "Size",

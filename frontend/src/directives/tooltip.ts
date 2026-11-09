@@ -1,13 +1,13 @@
 import type {Directive, DirectiveBinding} from 'vue'
 import {vTooltip} from 'floating-vue'
 
-// When a tooltip target lives inside a <dialog> opened via showModal(), the
-// dialog is in the browser's top layer. floating-vue teleports tooltips to
-// <body> by default, so they render *below* the dialog's ::backdrop and are
-// not visible. Teleporting them into the dialog keeps them in the top layer.
+// When a tooltip target lives inside a <dialog> opened via showModal() or an
+// open [popover] (Popup.vue), it is in the browser's top layer. floating-vue
+// teleports tooltips to <body> by default, so they render *below* it and are
+// not visible. Teleporting them into that element keeps them in the top layer.
 function buildBinding(el: Element, binding: DirectiveBinding): DirectiveBinding {
-	const dialog = el.closest('dialog')
-	if (!dialog) {
+	const topLayer = el.closest('dialog, [popover]')
+	if (!topLayer) {
 		return binding
 	}
 
@@ -22,15 +22,15 @@ function buildBinding(el: Element, binding: DirectiveBinding): DirectiveBinding 
 	}
 
 	if (normalized.container === undefined) {
-		normalized.container = dialog
+		normalized.container = topLayer
 	}
 
 	return {...binding, value: normalized}
 }
 
 // Bind via `mounted` rather than `beforeMount` so the element is already
-// attached to the DOM — otherwise `el.closest('dialog')` cannot find the
-// dialog ancestor.
+// attached to the DOM — otherwise `el.closest()` cannot find the top-layer
+// ancestor.
 const tooltip: Directive<Element, unknown> = {
 	mounted(el, binding) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
