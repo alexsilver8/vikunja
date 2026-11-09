@@ -85,6 +85,17 @@
 					:project-id="projectId"
 					@update:modelValue="taskList.loadTasks()"
 				/>
+				<span
+					v-if="projectId > 0"
+					class="mis-2"
+				>
+					<SavedViewsPopup
+						:project-id="projectId"
+						:view-id="viewId"
+						:current="savedViewState"
+						@apply="applySavedView"
+					/>
+				</span>
 			</div>
 		</template>
 
@@ -362,12 +373,18 @@ import CommentCount from '@/components/tasks/partials/CommentCount.vue'
 import FancyCheckbox from '@/components/input/FancyCheckbox.vue'
 import Sort from '@/components/tasks/partials/Sort.vue'
 import FilterPopup from '@/components/project/partials/FilterPopup.vue'
+import SavedViewsPopup from '@/components/project/partials/SavedViewsPopup.vue'
+import type {SavedTaskViewResponse} from '@/client/queries/savedTaskViews'
 import Pagination from '@/components/misc/Pagination.vue'
 import Popup from '@/components/misc/Popup.vue'
 import AddTask from '@/components/tasks/AddTask.vue'
 
 import type {SortBy} from '@/composables/useTaskList'
-import {useTaskList} from '@/composables/useTaskList'
+import {
+	sortByFromArrays,
+	sortByToArrays,
+	useTaskList,
+} from '@/composables/useTaskList'
 import type {TaskResponse} from '@/client/queries/tasks'
 import {useTableSort} from '@/composables/useTableSort'
 import {useDelayedLoading} from '@/composables/useDelayedLoading'
@@ -445,6 +462,23 @@ watch(
 )
 
 const {sort, ariaSort} = useTableSort<keyof SortBy>(sortBy, setActiveColumnsSortParam)
+
+const savedViewState = computed(() => ({
+	filter: params.value.filter ?? '',
+	search: params.value.q ?? '',
+	...sortByToArrays(sortByParam.value),
+}))
+
+// The column headers read the local sort, so apply to it rather than only the URL.
+function applySavedView(view: SavedTaskViewResponse) {
+	params.value = {
+		...params.value,
+		filter: view.filter,
+		q: view.search,
+	}
+	sortBy.value = sortByFromArrays(view.sort_by, view.order_by, SORT_BY_DEFAULT)
+	setActiveColumnsSortParam()
+}
 
 function setActiveColumnsSortParam() {
 	sortByParam.value = (Object.keys(sortBy.value) as (keyof SortBy)[])

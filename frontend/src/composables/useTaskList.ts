@@ -58,6 +58,18 @@ function serializeSortBy(sortBy: SortBy, defaultSort: SortBy): string | undefine
 	return keys.map(k => `${k}:${sortBy[k]}`).join(',')
 }
 
+export function sortByToArrays(sortBy: SortBy): {sort_by: string[], order_by: string[]} {
+	const keys = Object.keys(sortBy) as (keyof SortBy)[]
+	return {
+		sort_by: keys,
+		order_by: keys.map(key => sortBy[key] ?? 'asc'),
+	}
+}
+
+export function sortByFromArrays(sortBy: string[], orderBy: string[], fallback: SortBy): SortBy {
+	return parseSortQuery(sortBy.map((field, i) => `${field}:${orderBy[i]}`).join(','), fallback)
+}
+
 const SORT_BY_DEFAULT: SortBy = {
 	id: 'desc',
 }

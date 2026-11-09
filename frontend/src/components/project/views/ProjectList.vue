@@ -17,6 +17,13 @@
 					:project-id="projectId"
 					@update:modelValue="loadTasks()"
 				/>
+				<SavedViewsPopup
+					v-if="projectId > 0"
+					:project-id="projectId"
+					:view-id="viewId"
+					:current="savedViewState"
+					@apply="applySavedView"
+				/>
 			</div>
 		</template>
 
@@ -112,8 +119,14 @@ import FilterPopup from '@/components/project/partials/FilterPopup.vue'
 import Nothing from '@/components/misc/Nothing.vue'
 import Pagination from '@/components/misc/Pagination.vue'
 import SortPopup from '@/components/project/partials/SortPopup.vue'
+import SavedViewsPopup from '@/components/project/partials/SavedViewsPopup.vue'
 
-import {useTaskList} from '@/composables/useTaskList'
+import {
+	sortByFromArrays,
+	sortByToArrays,
+	useTaskList,
+	type SortBy,
+} from '@/composables/useTaskList'
 import {useTaskDragToProject} from '@/composables/useTaskDragToProject'
 import {useCurrentProject} from '@/composables/useCurrentProject'
 import {shouldShowTaskInListView} from '@/composables/useTaskListFiltering'
@@ -122,6 +135,7 @@ import {eventToShortcutString} from '@/helpers/shortcut'
 import {calculateItemPosition} from '@/helpers/calculateItemPosition'
 import type {TaskResponse} from '@/client/queries/tasks'
 import {isSavedFilterProject} from '@/client/queries/projects'
+import type {SavedTaskViewResponse} from '@/client/queries/savedTaskViews'
 
 import {useBaseStore} from '@/stores/base'
 import {useTaskDragState} from '@/composables/useTaskDragState'
@@ -142,6 +156,8 @@ defineOptions({name: 'List'})
 
 const ctaVisible = ref(false)
 
+const LIST_SORT_DEFAULT: SortBy = {position: 'asc'}
+
 const drag = ref(false)
 
 const {
@@ -155,7 +171,7 @@ const {
 } = useTaskList(
 	() => projectId.value,
 	() => props.viewId,
-	{position: 'asc'},
+	LIST_SORT_DEFAULT,
 	() => projectId.value === -1
 		? ['comment_count', 'is_unread']
 		: ['subtasks', 'comment_count', 'is_unread'],
@@ -172,6 +188,21 @@ const tasks = computed({
 watch([projectId, () => props.viewId], () => { dragTasks.value = null })
 
 const isPositionSorting = computed(() => 'position' in sortByParam.value)
+
+const savedViewState = computed(() => ({
+	filter: params.value.filter ?? '',
+	search: params.value.q ?? '',
+	...sortByToArrays(sortByParam.value),
+}))
+
+function applySavedView(view: SavedTaskViewResponse) {
+	params.value = {
+		...params.value,
+		filter: view.filter,
+		q: view.search,
+	}
+	sortByParam.value = sortByFromArrays(view.sort_by, view.order_by, LIST_SORT_DEFAULT)
+}
 
 const baseStore = useBaseStore()
 const {setDraggedTask} = useTaskDragState()
